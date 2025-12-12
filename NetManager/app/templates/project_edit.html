@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Projeto - NetManager{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <h2 class="card-title mb-4">
+                    <i class="fas fa-edit me-2"></i>{{ project.name }}
+                </h2>
+
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Nome</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ project.name }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Observações</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3">{{ project.notes or '' }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="map" class="form-label">Nova Imagem do Mapa</label>
+                        <input type="file" class="form-control" id="map" name="map" accept="image/png,image/jpeg,image/jpg">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Atualizar</button>
+                </form>
+
+                {% if project.map_filename %}
+                <hr>
+                <img src="{{ url_for('projects.uploaded_file', filename=project.map_filename) }}" class="img-fluid" style="max-height: 300px;">
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-plus me-2"></i>Novo Dispositivo</h5>
+            </div>
+            <div class="card-body">
+                <form id="devForm">
+                    <input type="text" id="devName" class="form-control mb-2" placeholder="Nome">
+                    <input type="text" id="devType" class="form-control mb-2" placeholder="Tipo (router/switch/pc)">
+                    <input type="text" id="devIp" class="form-control mb-2" placeholder="IP">
+                    <input type="text" id="devMac" class="form-control mb-2" placeholder="MAC">
+                    <input type="text" id="devGateway" class="form-control mb-2" placeholder="Gateway">
+                    <input type="text" id="devDns" class="form-control mb-2" placeholder="DNS">
+                    <button type="button" class="btn btn-success w-100" onclick="addDev()">Adicionar</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card shadow">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-microchip me-2"></i>Dispositivos</h5>
+            </div>
+            <div class="card-body" id="devList" style="max-height: 400px; overflow-y: auto;">
+                Carregando...
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const pid = {{ project.id }};
+
+function loadDevs() {
+    fetch(`/api/project/${pid}`)
+        .then(r => r.json())
+        .then(d => {
+            const html = d.devices.map(dev => `
+                <div class="border-bottom pb-2 mb-2">
+                    <strong>${dev.name || 'N/A'}</strong><br>
+                    <small class="text-muted">${dev.device_type}</small><br>
+                    <small>${dev.ip || '-'}</small>
+                    <button class="btn btn-xs btn-danger btn-sm mt-1" onclick="delDev(${dev.id})"><i class="fas fa-trash"></i></button>
+                </div>
+            `).join('');
+            document.getElementById('devList').innerHTML = html || '<p class="text-muted">Nenhum</p>';
+        });
+}
+
+function addDev() {
+    const data = {
+        device_type: document.getElementById('devType').value || 'router',
+        name: document.getElementById('devName').value,
+        ip: document.getElementById('devIp').value,
+        mac: document.getElementById('devMac').value,
+        gateway: document.getElementById('devGateway').value,
+        dns: document.getElementById('devDns').value
+    };
+    fetch(`/api/project/${pid}/device`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    }).then(() => {
+        document.getElementById('devForm').reset();
+        loadDevs();
+    });
+}
+
+function delDev(id) {
+    if (confirm('Deletar?')) {
+        fetch(`/api/device/${id}`, {method: 'DELETE'}).then(() => loadDevs());
+    }
+}
+
+loadDevs();
+</script>
+{% endblock %}

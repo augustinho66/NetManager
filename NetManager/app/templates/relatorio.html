@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Relatório - {{ project.name }}{% endblock %}
+
+{% block content %}
+<div class="card shadow">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">
+            <i class="fas fa-file-pdf me-2"></i>Relatório: {{ project.name }}
+        </h4>
+    </div>
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <p><strong>Projeto:</strong> {{ project.name }}</p>
+                <p><strong>Data:</strong> {{ now.strftime('%d/%m/%Y %H:%M:%S') }}</p>
+                <p><strong>Usuário:</strong> {{ current_user.username }}</p>
+            </div>
+            <div class="col-md-6 text-end">
+                <button class="btn btn-success" onclick="downloadPDF()">
+                    <i class="fas fa-download me-1"></i>Baixar PDF
+                </button>
+                <button class="btn btn-secondary" onclick="window.print()">
+                    <i class="fas fa-print me-1"></i>Imprimir
+                </button>
+            </div>
+        </div>
+
+        {% if project.notes %}
+        <div class="alert alert-info mb-4">
+            <strong>Observações:</strong><br>{{ project.notes }}
+        </div>
+        {% endif %}
+
+        {% if project.map_filename %}
+        <hr>
+        <h5>Mapa da Rede</h5>
+        <img id="mapForReport" src="{{ url_for('projects.uploaded_file', filename=project.map_filename) }}" 
+             class="img-fluid rounded" style="max-height: 600px; max-width: 100%;" alt="Mapa">
+        {% endif %}
+
+        <hr>
+        <h5>Dispositivos Configurados</h5>
+        {% if project.devices %}
+        <table class="table table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nome</th>
+                    <th>Tipo</th>
+                    <th>IP</th>
+                    <th>MAC</th>
+                    <th>Gateway</th>
+                    <th>DNS</th>
+                    <th>Observações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for device in project.devices %}
+                <tr>
+                    <td>{{ device.name or '-' }}</td>
+                    <td><span class="badge bg-primary">{{ device.device_type }}</span></td>
+                    <td><code>{{ device.ip or '-' }}</code></td>
+                    <td><code>{{ device.mac or '-' }}</code></td>
+                    <td><code>{{ device.gateway or '-' }}</code></td>
+                    <td><code>{{ device.dns or '-' }}</code></td>
+                    <td>{{ device.notes or '-' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-muted"><i class="fas fa-info-circle"></i> Nenhum dispositivo configurado</p>
+        {% endif %}
+
+        <hr>
+        <p class="text-muted text-center small mt-5">
+            <i class="fas fa-shield-alt"></i> Relatório gerado pelo NetManager
+        </p>
+    </div>
+</div>
+
+<script>
+function downloadPDF() {
+    const canvas = document.getElementById('mapForReport');
+    fetch(`/api/project/{{ project.id }}/relatorio/pdf?canvas_data=${encodeURIComponent(canvas?.src || '')}`)
+        .then(r => r.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'relatorio_{{ project.name }}.pdf';
+            a.click();
+        });
+}
+</script>
+
+{% endblock %}
+

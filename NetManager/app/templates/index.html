@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Meus Projetos - NetManager{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-project-diagram me-2"></i>Meus Projetos</h2>
+    <a href="{{ url_for('projects.create_project') }}" class="btn btn-primary btn-lg">
+        <i class="fas fa-plus me-2"></i>Novo Projeto
+    </a>
+</div>
+
+{% if projects %}
+    <div class="row g-4">
+        {% for project in projects %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm hover-shadow">
+                    {% if project.map_filename %}
+                        <img src="{{ url_for('projects.uploaded_file', filename=project.map_filename) }}" 
+                             class="card-img-top" style="height: 200px; object-fit: cover;" alt="Mapa do projeto">
+                    {% else %}
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="fas fa-image fa-3x text-muted"></i>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="card-body">
+                        <h5 class="card-title">{{ project.name }}</h5>
+                        <p class="card-text text-muted small">
+                            <i class="fas fa-calendar me-1"></i>{{ project.created_at.strftime('%d/%m/%Y %H:%M') }}
+                        </p>
+                        {% if project.notes %}
+                            <p class="card-text">{{ project.notes[:100] }}{% if project.notes|length > 100 %}...{% endif %}</p>
+                        {% endif %}
+                        <p class="card-text">
+                            <small class="text-muted">
+                                <i class="fas fa-microchip me-1"></i>
+                                {{ project.devices|length }} dispositivo(s)
+                            </small>
+                        </p>
+                    </div>
+                    
+                    <div class="card-footer bg-transparent">
+                        <a href="{{ url_for('projects.edit_project', pid=project.id) }}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-edit me-1"></i>Editar
+                        </a>
+                        <a href="{{ url_for('projects.gerar_relatorio', pid=project.id) }}" class="btn btn-sm btn-info">
+                            <i class="fas fa-file-pdf me-1"></i>Relatório
+                        </a>
+                        <form method="POST" action="{{ url_for('projects.delete_project', pid=project.id) }}" 
+                              class="d-inline" onsubmit="return confirm('Tem certeza que deseja deletar este projeto?');">
+                            <button type="submit" class="btn btn-sm btn-danger">
+                                <i class="fas fa-trash me-1"></i>Deletar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-folder-open fa-5x text-muted mb-3"></i>
+        <h5>Nenhum projeto criado ainda</h5>
+        <p class="text-muted mb-4">Comece criando seu primeiro projeto de rede</p>
+        <a href="{{ url_for('projects.create_project') }}" class="btn btn-primary btn-lg">
+            <i class="fas fa-plus me-2"></i>Criar Primeiro Projeto
+        </a>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<style>
+    .hover-shadow {
+        transition: box-shadow 0.3s ease;
+    }
+    .hover-shadow:hover {
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Novo Projeto - NetManager{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-body p-5">
+                <h2 class="card-title mb-4">
+                    <i class="fas fa-plus-circle me-2"></i>Criar Novo Projeto
+                </h2>
+
+                <form method="POST" enctype="multipart/form-data" novalidate>
+                    <div class="mb-3">
+                        <label for="name" class="form-label fw-bold">Nome do Projeto</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Ex: Rede da Filial SP" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="map" class="form-label fw-bold">Mapa/Planta da Rede</label>
+                        <div class="form-text mb-2">Upload da imagem do mapa/planta da rede (PNG, JPG, JPEG - máx 16MB)</div>
+                        <input type="file" class="form-control" id="map" name="map" accept="image/*">
+                        <div id="imagePreview" class="mt-3"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="notes" class="form-label fw-bold">Observações</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="5" placeholder="Observações sobre o projeto..."></textarea>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">Criar Projeto</button>
+                        <a href="{{ url_for('projects.index') }}" class="btn btn-secondary btn-lg">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('map').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const preview = document.getElementById('imagePreview');
+                preview.innerHTML = `<img src="${event.target.result}" class="img-fluid rounded" style="max-height: 400px;">`;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+{% endblock %}
+

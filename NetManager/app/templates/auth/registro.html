@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Registrar - NetManager{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card shadow">
+            <div class="card-body p-5">
+                <h2 class="card-title text-center mb-4">
+                    <i class="fas fa-user-plus me-2"></i>Criar Conta
+                </h2>
+
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Usuário</label>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Escolha um usuário" required minlength="3">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="seu@email.com" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="senha" class="form-label">Senha</label>
+                        <input type="password" class="form-control" id="senha" name="senha" placeholder="Mínimo 6 caracteres" required minlength="6">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="confirmar_senha" class="form-label">Confirmar Senha</label>
+                        <input type="password" class="form-control" id="confirmar_senha" name="confirmar_senha" placeholder="Repita a senha" required minlength="6">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 mb-3">Registrar</button>
+                </form>
+
+                <hr>
+
+                <p class="text-center">
+                    Já tem conta? <a href="{{ url_for('auth.login') }}" class="btn-link">Faça login aqui</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

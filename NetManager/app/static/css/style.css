@@ -1,0 +1,172 @@
+/* Estilo custom para NetManager */
+
+:root {
+    --primary-color: #0d6efd;
+    --success-color: #198754;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #0dcaf0;
+}
+
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background: linear-gradient(135deg, var(--primary-color) 0%, #0b5ed7 100%);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+    letter-spacing: 0.5px;
+}
+
+.card {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+.btn {
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-success {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+.form-control, .form-select {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 14px;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(13,107,253,0.25);
+}
+
+.device-icon {
+    position: absolute;
+    z-index: 10;
+    cursor: move;
+}
+
+.device-marker {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+}
+
+.device-icon:hover .device-marker {
+    transform: scale(1.15);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+#mapContainer {
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    background: #f5f5f5;
+}
+
+#mapImage {
+    width: 100%;
+    display: block;
+}
+
+.modal-content {
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+}
+
+.modal-header {
+    border-bottom: 1px solid #e9ecef;
+}
+
+.modal-footer {
+    border-top: 1px solid #e9ecef;
+}
+
+footer {
+    margin-top: auto;
+    border-top: 1px solid #e9ecef;
+}
+
+.alert {
+    border-radius: 6px;
+    border: none;
+}
+
+.table {
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* Animações */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeIn 0.3s ease;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .btn-sm {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.75rem;
+    }
+    
+    #mapContainer {
+        min-height: 400px;
+    }
+}

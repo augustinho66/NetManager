@@ -1,0 +1,1 @@
+Coloque aqui arquivos estáticos (CSS/JS/ícones).
